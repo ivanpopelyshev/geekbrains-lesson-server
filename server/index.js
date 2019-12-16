@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors());
 app.use("/api", express.json());
-app.use("/", express.static(__dirname + "./client/"));
+app.use("/", express.static(__dirname + "/../client" ));
 
 app.get("/api", (req, res)=>{
     res.send({
