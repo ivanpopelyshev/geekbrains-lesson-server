@@ -7,6 +7,9 @@ lerna-debug.log
 
 # project ignores
 node_modules
+.cache
+client/src*
+client/index.html
 
 # jetBrains IDE ignores
 .idea
