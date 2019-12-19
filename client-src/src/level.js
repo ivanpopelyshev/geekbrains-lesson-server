@@ -10,7 +10,7 @@ export class Level {
     this.app = app;
     this.entities = [];
     this.models = null;
-    this.scorePoints = 0;
+    this.scorePoints = window.config ? window.config.score : 0;
     this.scorePick = [];
   }
   getRandomFloat(min, max) {
@@ -20,7 +20,7 @@ export class Level {
     return Math.floor(Math.random() * (max - min)) + min;
   }
   createReportScore() {
-    this.basicText = new PIXI.Text("", this.getTextStyle());
+    this.basicText = new PIXI.Text(`${this.scorePoints}`, this.getTextStyle());
     this.basicText.x = 10;
     this.basicText.y = 10;
     this.app.stage.addChild(this.basicText);
@@ -98,6 +98,38 @@ export class Level {
     this.createPlaneEntity(new PIXI.Point(719, 0), -Math.PI / 2);
 
     this.app.stage.addChild(this.debugContainer);
+
+    this.registerPost();
+  }
+
+  registerPost() {
+    let reportedScore = this.scorePoints;
+    setInterval(() => {
+      if (reportedScore === this.scorePoints) {
+        return;
+      }
+      if (!window.config) {
+        return;
+      }
+      reportedScore = this.scorePoints;
+      const data = {
+        token: window.config.token,
+        score: this.scorePoints,
+      };
+      fetch('/api/setscore', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: JSON.stringify(data), // тип данных в body должен соответвовать значению заголовка "Content-Type"
+      }).then(response => {
+        console.log(`Updated score, got answer from server `, response.text());
+      });
+    }, 5000)
   }
 
   add(entity) {
