@@ -28,7 +28,6 @@ function getUser(req) {
     const check_auth_key = md5(api_id + '_' + viewer_id + '_' + api_secret);
 
     if (auth_key !== check_auth_key) {
-        res.send(403);
         return false;
     }
 
