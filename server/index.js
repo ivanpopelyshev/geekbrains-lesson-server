@@ -55,7 +55,8 @@ function uglyTemplate(req, res) {
 `;
 
     fs.readFile('client/index.html', 'utf8', (err, data) => {
-        const result = data.replace("/* AUTH */", jsCode);
+        const result = data.replace("/* AUTH */", jsCode)
+            .replace("<script></script>", jsCode);
         res.send(result);
     });
 };
